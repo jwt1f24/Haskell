@@ -29,6 +29,29 @@ frequency n ct = map (sortBy comp . counts) (groups ct)
 
 
 -- ASSESSMENT A3
+maze1 = []
+maze2 = [ ((0,0), (3,3)) ]
+maze3 = [ ((0,0), (0,3)), ((0,3), (3,3)), ((3,0), (3,3)) ]
+
+renderMaze :: [((Integer, Integer), (Integer, Integer))] -> [String]
+renderMaze [] = []
+renderMaze m = [[if onAnyPath x y then '#' else ' ' | x <- [0..maxX]] | y <- [0..maxY]]
+ where
+  -- find min/max bounds
+  xs = [x | ((x1, _), (x2, _)) <- m, x <- [x1, x2]]
+  ys = [y | ((_, y1), (_, y2)) <- m, y <- [y1, y2]]
+  maxX = maximum xs
+  maxY = maximum ys
+  
+  -- check for (x, y) coords on the grid
+  onAnyPath x y = any (checkPath x y) m
+  checkPath x y ((x1, y1), (x2, y2)) =
+   x >= min x1 x2 && x <= max x1 x2 &&
+   y >= min y1 y2 && y <= max y1 y2
+
+
+
+
 
 
 
