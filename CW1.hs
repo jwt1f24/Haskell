@@ -1,6 +1,7 @@
--- ASSESSMENT A1
 import Data.Char (toUpper, ord, chr)
+import Data.List (sortBy)
 
+-- ASSESSMENT A1
 filterChar :: String -> String
 filterChar = filter (`elem` ['A'..'Z']) . map toUpper
 
@@ -17,3 +18,19 @@ vigenere key = (encrypt, decrypt)
 
 
 -- ASSESSMENT A2
+frequency :: Int -> String -> [[(Char, Int)]]
+frequency n ct = map (sortBy comp . counts) (groups ct)
+ where
+  groups s = map (\k -> everyNth (drop k s)) [0..(n-1)]
+  everyNth [] = []
+  everyNth (x:xs) = x : everyNth (drop (n-1) xs)
+  counts s = [(c, length (filter (== c) s)) | c <- ['A'..'Z'], c `elem` s]
+  comp (c1, n1) (c2, n2) = compare n2 n1 <> compare c1 c2
+
+
+-- ASSESSMENT A3
+
+
+
+
+
