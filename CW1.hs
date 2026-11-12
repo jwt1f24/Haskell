@@ -1,4 +1,4 @@
-import Data.Char (toUpper, ord, chr)
+import Data.Char (toUpper, ord, chr, isDigit, isUpper)
 import Data.List (sortBy)
 
 -- ASSESSMENT A1
@@ -81,6 +81,27 @@ connected (p:ps) = go [p] ps
    where
     new = filter (\q -> any (intersects q) reached) rest
     others = filter (\q -> not (any (intersects q) reached)) rest
+
+
+-- ASSESSMENT A5
+hextonum :: Char -> Int
+hextonum c
+ | isDigit c = ord c - ord '0'
+ | isUpper c = ord c - ord 'A' + 10
+ | otherwise = ord c - ord 'a' + 10
+
+numtohex :: Int -> Char
+numtohex n
+ | n < 10 = chr (ord '0' + n)
+ | otherwise = chr (ord 'A' + (n - 10))
+
+
+
+
+
+
+
+
 
 
 
