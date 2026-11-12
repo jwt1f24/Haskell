@@ -29,28 +29,34 @@ frequency n ct = map (sortBy comp . counts) (groups ct)
 
 
 -- ASSESSMENT A3
-maze1 = []
-maze2 = [ ((0,0), (3,3)) ]
-maze3 = [ ((0,0), (0,3)), ((0,3), (3,3)), ((3,0), (3,3)) ]
+-- lines with 2 ends
+type Path = ((Integer, Integer), (Integer, Integer))
 
-renderMaze :: [((Integer, Integer), (Integer, Integer))] -> [String]
+maze1, maze2, maze3 :: [Path]
+maze1 = []
+maze2 = [ ((0,0), (0,3)), ((0,3), (3,3)), ((3,0), (3,3)) ]
+maze3 = [ ((0,0),(0,3)), ((0,2),(2,2)), ((2,1),(4,1)), ((4,0),(4,2)), 
+        ((4,2),(5,2)), ((2,1),(2,5)), ((1,5),(4,5)) ]
+
+renderMaze :: [Path] -> [String]
 renderMaze [] = []
-renderMaze m = [[if onAnyPath x y then '#' else ' ' | x <- [0..maxX]] | y <- [0..maxY]]
+renderMaze m = [[cell x y | x <- [0..maxX]] | y <- [0..maxY]]
  where
-  -- find min/max bounds
-  xs = [x | ((x1, _), (x2, _)) <- m, x <- [x1, x2]]
-  ys = [y | ((_, y1), (_, y2)) <- m, y <- [y1, y2]]
-  maxX = maximum xs
-  maxY = maximum ys
+  -- define grid size
+  maxX = maximum [x | ((x1, _), (x2, _)) <- m, x <- [x1, x2]]
+  maxY = maximum [y | ((_, y1), (_, y2)) <- m, y <- [y1, y2]]
   
-  -- check for (x, y) coords on the grid
-  onAnyPath x y = any (checkPath x y) m
-  checkPath x y ((x1, y1), (x2, y2)) =
+  -- output '#' if (x, y) exists in path, else space
+  cell x y = if any (covers x y) m then '#' else ' '
+
+  -- check if (x, y) exists in the grid path
+  covers x y ((x1, y1), (x2, y2)) =
    x >= min x1 x2 && x <= max x1 x2 &&
    y >= min y1 y2 && y <= max y1 y2
 
 
 -- ASSESSMENT A4
+mazeA, mazeB, mazeC, mazeD, mazeE, mazeF :: [Path]
 mazeA = []
 mazeB = [ ((0,0), (0,3)) ]
 mazeC = [ ((0,0), (0,3)), ((0,2), (2,2)) ]
@@ -59,9 +65,6 @@ mazeE = [ ((0,0),(0,3)), ((0,2),(2,2)), ((2,1),(4,1)), ((4,0),(4,2)),
         ((4,2),(5,2)), ((2,1),(2,5)), ((1,5),(4,5)) ]
 mazeF = [ ((0,0),(0,3)), ((0,2),(2,2)), ((2,1),(4,1)), ((4,0),(4,2)), 
         ((4,2),(5,2)), ((2,1),(2,5)), ((3,5),(5,5)) ]
-
--- lines with 2 ends
-type Path = ((Integer, Integer), (Integer, Integer))
 
 -- check if 2 lines cross each other at any point
 intersects :: Path -> Path -> Bool
