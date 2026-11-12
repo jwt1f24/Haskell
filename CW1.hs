@@ -50,9 +50,37 @@ renderMaze m = [[if onAnyPath x y then '#' else ' ' | x <- [0..maxX]] | y <- [0.
    y >= min y1 y2 && y <= max y1 y2
 
 
+-- ASSESSMENT A4
+mazeA = []
+mazeB = [ ((0,0), (0,3)) ]
+mazeC = [ ((0,0), (0,3)), ((0,2), (2,2)) ]
+mazeD = [ ((0,0), (0,3)), ((3,5), (5,5)) ]
+mazeE = [ ((0,0),(0,3)), ((0,2),(2,2)), ((2,1),(4,1)), ((4,0),(4,2)), 
+        ((4,2),(5,2)), ((2,1),(2,5)), ((1,5),(4,5)) ]
+mazeF = [ ((0,0),(0,3)), ((0,2),(2,2)), ((2,1),(4,1)), ((4,0),(4,2)), 
+        ((4,2),(5,2)), ((2,1),(2,5)), ((3,5),(5,5)) ]
 
+-- lines with 2 ends
+type Path = ((Integer, Integer), (Integer, Integer))
 
+-- check if 2 lines cross each other at any point
+intersects :: Path -> Path -> Bool
+intersects ((ax1, ay1), (ax2, ay2)) ((bx1, by1), (bx2, by2)) =
+ let xOverlap = max (min ax1 ax2) (min bx1 bx2) <= min (max ax1 ax2) (max bx1 bx2)
+     yOverlap = max (min ay1 ay2) (min by1 by2) <= min (max ay1 ay2) (max by1 by2)
+ in xOverlap && yOverlap
 
+-- check if maze is linked from any to other lines by hopping btwn connected lines
+connected :: [Path] -> Bool
+connected [] = True
+connected (p:ps) = go [p] ps
+ where
+  go reached rest
+   | null new = null rest
+   | otherwise = go (reached ++ new) others
+   where
+    new = filter (\q -> any (intersects q) reached) rest
+    others = filter (\q -> not (any (intersects q) reached)) rest
 
 
 
