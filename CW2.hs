@@ -1,6 +1,6 @@
 import Data.List(nub)
 
--- data type keywords
+-- type synonyms
 type Pos = (Int, Int)
 data Side = North | East | South | West deriving (Show, Eq, Ord)
 type EdgePos = (Side, Int)
@@ -85,6 +85,7 @@ subsets :: [a] -> [[a]]
 subsets [] = [[]]
 subsets (x:rest) = [x : g | g <- sr] ++ sr
  where sr = subsets rest
+
 
 
 
