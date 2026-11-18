@@ -1,4 +1,4 @@
-import Data.List (sort)
+import Data.List(nub)
 
 -- data type keywords
 type Pos = (Int, Int)
@@ -8,7 +8,7 @@ type Atoms = [Pos]
 type Interactions = [(EdgePos, Marking)]
 data Marking = Absorb | Reflect | Path EdgePos deriving (Show, Eq)
 
--- main function
+-- challenge 1
 calcBBInteractions :: Int -> Atoms -> Interactions
 calcBBInteractions n atoms = [interaction n atoms e | e <- entries] 
  where 
@@ -66,3 +66,25 @@ interaction n atoms e = (e, marking e result)
  where
   (p, d) = start n e
   result = trace n atoms p d
+
+
+-- challenge 2
+solveBB :: Int -> Interactions -> Atoms
+solveBB n given = nub (concat [atoms | atoms <- subsets (cells n), agrees n atoms given])
+
+-- check if result reproduces every interaction
+agrees :: Int -> Atoms -> Interactions -> Bool
+agrees n atoms given = all (\(e, m) -> interaction n atoms e == (e, m)) given
+
+-- positions in grid of size N
+cells :: Int -> [Pos]
+cells n = [(c, r) | c <- [1..n], r <- [1..n]]
+
+-- find every subset in a list
+subsets :: [a] -> [[a]]
+subsets [] = [[]]
+subsets (x:rest) = [x : g | g <- sr] ++ sr
+ where sr = subsets rest
+
+
+
