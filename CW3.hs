@@ -1,5 +1,6 @@
 import Prelude hiding (lookup)
 
+-- ASSESSMENT 1
 -- type synonym for environment
 type Environment = [(String, Expr)]
 
@@ -23,3 +24,14 @@ env1 = [("x", Var "a"), ("y", Var "b"), ("x", Var "c")]
 
 env2 :: Environment
 env2 = [("a", Closure "b" (Var "b") [])]
+
+
+-- ASSESSMENT 2
+-- data type
+data Frame = Arg Expr Environment
+             | ClosureFrame Expr
+             deriving (Eq, Show, Read)
+
+-- type synonym
+type Continuation = [Frame]
+type Configuration = (Expr, Environment, Continuation)
