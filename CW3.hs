@@ -35,3 +35,27 @@ data Frame = Arg Expr Environment
 -- type synonym
 type Continuation = [Frame]
 type Configuration = (Expr, Environment, Continuation)
+
+
+-- ASSESSMENT 3
+-- R1
+eval1 :: Configuration -> Configuration
+eval1 (Var x, env, k) =
+ case lookup x env of
+  Just v -> (v, env, k)
+  Nothing -> error "eval1 terminated, undefined variable."
+
+-- R2
+eval1 (Lam x body, env, k) = (Closure x body env, env, k)
+
+-- R3
+eval1 (App e1 e2, env, k) = (e1, env, Arg e2 env : k)
+
+-- R4
+eval1 (cls@(Closure _ _ _), env, Arg e2 env' : k) = (e2, env', ClosureFrame cls : k)
+
+-- R5
+eval1 (v, env, ClosureFrame (Closure x body cenv) : k) = (body, (x, v) : cenv, k)
+
+-- catch for invalid configurations
+eval1 (_, _, _) = error "eval1 terminated, invalid configuration"
