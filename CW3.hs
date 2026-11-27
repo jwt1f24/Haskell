@@ -72,10 +72,27 @@ run (cls@(Closure _ _ _), env, []) = cls
 run cfg = run (eval1 cfg)
 
 
+-- ASSESSMENT 5
+-- test case 1, evaluate to closure lambda expression 
+term1 :: Expr
+term1 =
+ App (Lam "v"
+  (App
+   (App (Var "v") (Lam "z" (Var
+   "z"))) (App (Lam "v" (App
+      (App (Var "v") (Lam "x" (Lam "y" (Var
+      "x")))) (Lam "z" (Var "z")))
+     )
+     (Lam "x" (Lam "y" (Var "x")))
+    )
+   )
+  )
+ (Lam "x" (Lam "y" (Var "y")))
 
+-- test case 2, apply new identity & return as a closure
+term2 :: Expr
+term2 = App (Lam "x" (Var "x")) (Lam "y" (Var "y"))
 
-
-
-
-
-
+-- test case 3, unbound variable in empty environment
+term3 :: Expr
+term3 = Var "undefined_variable"
