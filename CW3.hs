@@ -59,3 +59,23 @@ eval1 (v, env, ClosureFrame (Closure x body cenv) : k) = (body, (x, v) : cenv, k
 
 -- catch for invalid configurations
 eval1 (_, _, _) = error "eval1 terminated, invalid configuration"
+
+
+-- ASSESSMENT 4
+-- take lambda expression & evaluate using Call-by-Value until termination
+eval :: Expr -> Expr
+eval e = run (e, [], [])
+
+-- return terminated expression once function terminates
+run :: Configuration -> Expr
+run (cls@(Closure _ _ _), env, []) = cls
+run cfg = run (eval1 cfg)
+
+
+
+
+
+
+
+
+
