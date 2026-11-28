@@ -9,6 +9,8 @@ data Expr = Var String
             | Lam String Expr
             | App Expr Expr
             | Closure String Expr Environment
+            | Zero                            -- extension
+            | Succ Expr                       -- extension
             deriving (Eq, Show, Read)
 
 -- lookup function
@@ -30,6 +32,7 @@ env2 = [("a", Closure "b" (Var "b") [])]
 -- data type
 data Frame = Arg Expr Environment
              | ClosureFrame Expr
+             | SuccFrame               -- modification
              deriving (Eq, Show, Read)
 
 -- type synonym
@@ -57,6 +60,10 @@ eval1 (cls@(Closure _ _ _), env, Arg e2 env' : k) = (e2, env', ClosureFrame cls 
 -- R5
 eval1 (v, env, ClosureFrame (Closure x body cenv) : k) = (body, (x, v) : cenv, k)
 
+-- modified evaluation rules
+eval1 (Succ e, env, k) = (e, env, SuccFrame : k)
+eval1 (v, env, SuccFrame : k) = (Succ v, env, k)
+
 -- catch for invalid configurations
 eval1 (_, _, _) = error "eval1 terminated, invalid configuration"
 
@@ -68,7 +75,7 @@ eval e = run (e, [], [])
 
 -- return terminated expression once function terminates
 run :: Configuration -> Expr
-run (cls@(Closure _ _ _), env, []) = cls
+run (v, env, []) | isValue v = v
 run cfg = run (eval1 cfg)
 
 
@@ -96,3 +103,16 @@ term2 = App (Lam "x" (Var "x")) (Lam "y" (Var "y"))
 -- test case 3, unbound variable in empty environment
 term3 :: Expr
 term3 = Var "undefined_variable"
+
+-- test case 4, handling termination values
+term4 :: Expr
+term4 = App (Lam "x" (Succ (Var "x"))) Zero
+
+
+-- ASSESSMENT 6
+-- handle termination values
+isValue :: Expr -> Bool
+isValue (Closure _ _ _) = True
+isValue Zero = True
+isValue (Succ e) = isValue e
+isValue _ = False
